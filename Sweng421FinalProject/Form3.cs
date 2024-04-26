@@ -16,5 +16,11 @@ namespace Sweng421FinalProject
         {
             InitializeComponent();
         }
+
+        //where tasks will be viewed
+        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }
