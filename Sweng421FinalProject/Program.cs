@@ -308,11 +308,11 @@ namespace Sweng421FinalProject
 
     
 
-    public interface NotificationSystemWrapper
+    public abstract class NotificationSystemWrapper
     {
 
-       
-        public void notify();
+        public AbstractTask at;
+        public abstract void notify();
         
 
         
@@ -320,29 +320,30 @@ namespace Sweng421FinalProject
 
     public class DeadlineNotificationWrapper : NotificationSystemWrapper
     {
-        private AbstractTask dt;
+       
         public DeadlineNotificationWrapper(AbstractTask t)
         {
-            this.dt = t;
+            
+            at = t;
         }
-        public void notify()
+        public override void notify()
         {
-            TimeSpan difference = DateTime.Now - dt.getDeadline();
+            TimeSpan difference = DateTime.Now - at.getDeadline();
 
             Console.WriteLine(difference.Milliseconds);
         }
     }
 
-    public class StatusUpdate : NotificationSystemWrapper
+    public class StatusUpdateWrapper : NotificationSystemWrapper
     {
-        private AbstractTask st;
+        
 
-        public StatusUpdate(AbstractTask t)
+        public StatusUpdateWrapper(AbstractTask t)
         {
-            this.st = t;
+            at = t;
 
         }
-        public void notify()
+        public override void notify()
         {
             
         }
@@ -513,6 +514,10 @@ namespace Sweng421FinalProject
             
             //test wrapper
             NotificationSystemWrapper nsw = new DeadlineNotificationWrapper(task);
+
+            nsw.notify();
+
+            nsw = new StatusUpdateWrapper(t2);
 
             nsw.notify();
 
