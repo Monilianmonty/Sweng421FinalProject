@@ -125,11 +125,11 @@
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new Point(196, 250);
+            label4.Location = new Point(214, 250);
             label4.Name = "label4";
-            label4.Size = new Size(112, 15);
+            label4.Size = new Size(30, 15);
             label4.TabIndex = 9;
-            label4.Text = "Oganization Priority";
+            label4.Text = "Role";
             // 
             // Form2
             // 

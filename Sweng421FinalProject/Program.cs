@@ -1,6 +1,7 @@
 using Sweng421FinalProject;
 using System.Diagnostics;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace Sweng421FinalProject
 {
@@ -50,18 +51,96 @@ namespace Sweng421FinalProject
     }
 
 
-    public class User
+    public class User: PersonIF
     {
         //public MainGUI mg;
-        public TMS tms;
+        public List<TaskIF> tasks;
+
+        public AbstractTask getInfo()
+        {
+            foreach (AbstractTask task in tasks)
+            {
+                if (task is LowPriorityPerson)
+                {
+                    task.PresentTask();
+                    return task;
+                }
+                else if (task is MediumPriorityTask)
+                {
+                    task.PresentTask();
+                    return task;
+                }
+                else if (task is HighPriorityTask)
+                {
+                    task.PresentTask();
+                    return task;
+                }
+            }
+
+
+            return null;
+        }
+
+
     }
 
+    public interface PersonIF
+    {
+        public AbstractTask getInfo();
+
+      
+    }
+
+    public class Admin : PersonIF
+    {
+        List<AbstractTask> tasks = new List<AbstractTask>();
+        User user;
+
+        public Admin(List<AbstractTask> tasks)
+        {
+            this.tasks = tasks;
+        }
+
+        public AbstractTask getInfo()
+        {
+            foreach (AbstractTask task in tasks)
+            {
+                if (task is LowPriorityPerson)
+                {
+                    task.PresentTask();
+                    return task;
+                }
+                else if (task is MediumPriorityTask)
+                {
+                    task.PresentTask();
+                    return task;
+                }
+                else if (task is HighPriorityTask)
+                {
+                    task.PresentTask();
+                    return task;
+                }
+            }
+
+            
+            return null; 
+        }
+
+
+        public void modifyInfo(User employee, AbstractTask t)
+        {
+            
+        }
+
+    }
+
+  
 
     public interface TaskIF
     {
-        string Task { get; set; }
-        int Priority { get; set; }
-        DateTime Deadline { get; set; }
+        string Task { get; }
+        int Priority { get;  }
+        DateTime Deadline { get;  }
     }
 
     public abstract class AbstractTask : TaskIF
@@ -344,7 +423,9 @@ namespace Sweng421FinalProject
         }
     }
 
+   
 
+   
     internal static class Program
     {
 
