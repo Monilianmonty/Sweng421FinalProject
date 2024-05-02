@@ -59,102 +59,62 @@ namespace Sweng421FinalProject
 
     public interface TaskIF
     {
-        public String getTask();
-
-        public void setTask(String task);
-
-        public int getPriority();
-
-        public void setPriority(int priority);
-
-        public DateTime getDeadline();
-
-        public void setDeadline(DateTime deadline);
-
+        string Task { get; set; }
+        int Priority { get; set; }
+        DateTime Deadline { get; set; }
     }
 
     public abstract class AbstractTask : TaskIF
     {
-        String task;
-        int priority;
-        DateTime deadline;
+        public string Task { get; set; }
+        public int Priority { get; set; }
+        public DateTime Deadline { get; set; }
 
-        public AbstractTask()
-        {
-
-        }
-        public String getTask()
-        {
-            return task;
-        }
-
-        public void setTask(String task)
-        {
-            this.task = task;
-        }
-
-        public int getPriority()
-        {
-            return this.priority;
-        }
-
-        public void setPriority(int priority)
-        {
-            this.priority = priority;
-        }
-
-        public abstract void presentTask();
-
-        public DateTime getDeadline()
-        {
-            return deadline;
-        }
-
-        public void setDeadline(DateTime deadline)
-        {
-            this.deadline = deadline;
-        }
+        public abstract void PresentTask();
     }
 
     public class LowPriorityTask : AbstractTask
     {
-        String task;
-
-        int priority = 3;
-
-        DateTime deadline;
-
-        public LowPriorityTask(String task, int priority, DateTime deadline)
+        public LowPriorityTask(string task, int priority, DateTime deadline)
         {
-            this.task = task;
-            this.priority = priority;
-            this.deadline = deadline;
-
+            Task = task;
+            Priority = priority;
+            Deadline = deadline;
         }
 
-        public String getTask()
+        public override void PresentTask()
         {
-            return task;
+            Console.WriteLine($"This task is low priority with the task being {Task} and the deadline is {Deadline}.");
+        }
+    }
+
+    public class MediumPriorityTask : AbstractTask
+    {
+        public MediumPriorityTask(string task, int priority, DateTime deadline)
+        {
+            Task = task;
+            Priority = priority;
+            Deadline = deadline;
         }
 
-        public void setTask(String task)
+        public override void PresentTask()
         {
-            this.task = task;
+            Console.WriteLine($"This task is medium priority with the task being {Task} and the deadline is {Deadline}.");
+        }
+    }
+
+    public class HighPriorityTask : AbstractTask
+    {
+        public HighPriorityTask(string task, int priority, DateTime deadline)
+        {
+            Task = task;
+            Priority = priority;
+            Deadline = deadline;
         }
 
-        public int getPriority()
+        public override void PresentTask()
         {
-            return this.priority;
-        }
-
-        public void setPriority(int priority)
-        {
-            this.priority = priority;
-        }
-
-        public override void presentTask()
-        {
-            Console.WriteLine("this task is low priority with the task being " + task + " and the deadline is " + deadline);
+            Console.WriteLine($"This task is high priority with the task being {Task} and the deadline is {Deadline}.");
         }
     }
 
@@ -185,19 +145,19 @@ namespace Sweng421FinalProject
                 {
                    
                     Console.WriteLine("******** " + report + " *********");
-                    lowPriorityTask.presentTask(); 
+                    lowPriorityTask.PresentTask(); 
                 }
                 else if (task is MediumPriorityTask mediumprioritytask)
                 {
 
                     Console.WriteLine("******** " + report + " *********");
-                    mediumprioritytask.presentTask();
+                    mediumprioritytask.PresentTask();
                 }
                 else if (task is HighPriorityTask highpriorityperson)
                 {
 
                     Console.WriteLine("******** " + report + " *********");
-                    highpriorityperson.presentTask();
+                    highpriorityperson.PresentTask();
                 }
             }
         }
@@ -216,94 +176,7 @@ namespace Sweng421FinalProject
     public void createReport();
     }
 
-    public class MediumPriorityTask : AbstractTask
-    {
-        String task;
-
-        int priority = 2;
-
-        DateTime deadline;
-
-        public MediumPriorityTask(String task, int priority, DateTime deadline)
-        {
-            this.task = task;
-            this.priority = priority;
-            this.deadline = deadline;
-
-        }
-
-        public MediumPriorityTask() { }
-
-        public String getTask()
-        {
-            return task;
-        }
-
-        public void setTask(String task)
-        {
-            this.task = task;
-        }
-
-        public int getPriority()
-        {
-            return this.priority;
-        }
-
-        public void setPriority(int priority)
-        {
-            this.priority = priority;
-        }
-
-        public override void presentTask()
-        {
-            Console.WriteLine("this task is medium priority with the task being " + task + " and the deadline is " + deadline);
-        }
-
-
-    }
-
-    public class HighPriorityTask : AbstractTask
-    {
-        String task;
-
-        int priority = 2;
-
-        DateTime deadline;
-
-        public HighPriorityTask(String task, int priority, DateTime deadline)
-        {
-            this.task = task;
-            this.priority = priority;
-            this.deadline = deadline;
-
-        }
-
-        public String getTask()
-        {
-            return task;
-        }
-
-        public void setTask(String task)
-        {
-            this.task = task;
-        }
-
-        public int getPriority()
-        {
-            return this.priority;
-        }
-
-        public void setPriority(int priority)
-        {
-            this.priority = priority;
-        }
-
-        public override void presentTask()
-        {
-            Console.WriteLine("this task is high priority with the task being " + task + " and the deadline is " + deadline);
-        }
-    }
-
+    
     
 
     
@@ -311,7 +184,7 @@ namespace Sweng421FinalProject
     public abstract class NotificationSystemWrapper
     {
 
-        public AbstractTask at;
+        
         public abstract void notify();
         
 
@@ -320,32 +193,36 @@ namespace Sweng421FinalProject
 
     public class DeadlineNotificationWrapper : NotificationSystemWrapper
     {
-       
+        public AbstractTask dt;
         public DeadlineNotificationWrapper(AbstractTask t)
         {
-            
-            at = t;
+
+            dt = t;
         }
         public override void notify()
         {
-            TimeSpan difference = DateTime.Now - at.getDeadline();
+            TimeSpan difference = DateTime.Now - dt.Deadline;
+            
 
-            Console.WriteLine(difference.Milliseconds);
+            Console.WriteLine(difference.Milliseconds + " prio "+ dt.Priority);
         }
     }
 
     public class StatusUpdateWrapper : NotificationSystemWrapper
     {
-        
+        public AbstractTask st;
 
         public StatusUpdateWrapper(AbstractTask t)
         {
-            at = t;
+            st = t;
 
         }
         public override void notify()
         {
-            
+            int f = st.Priority;
+
+            Console.WriteLine("Status update on task statement " + st.Task + "with a priority of " + f);
+
         }
     }
 
@@ -493,7 +370,7 @@ namespace Sweng421FinalProject
 
             if (task != null)
             {
-                task.presentTask(); // assuming there's a method to perform the task
+                task.PresentTask(); // assuming there's a method to perform the task
             }
             else
             {
@@ -517,9 +394,11 @@ namespace Sweng421FinalProject
 
             nsw.notify();
 
-            nsw = new StatusUpdateWrapper(t2);
+            NotificationSystemWrapper dsw = new StatusUpdateWrapper(t2);
 
-            nsw.notify();
+            dsw.notify();
+
+            
 
             ApplicationConfiguration.Initialize();
             Application.Run(new Form1());

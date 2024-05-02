@@ -1,9 +1,20 @@
 using System.Diagnostics;
 using System.Reflection;
+using Sweng421FinalProject;
 
-namespace Server
+namespace Sweng421FinalProject
 {
+    static void Main(String[] args)
+    {
+        Sweng421FinalProject f = new Sweng421FinalProject();
 
+        f = new TaskIF();
+
+        f = new LowPriorityTask()
+
+       
+    }
+    
     public interface TaskIF
     {
         public String getTask();
@@ -17,7 +28,7 @@ namespace Server
         public DateTime getDeadline();
 
         public void setDeadline(DateTime deadline);
-
+        
     }
 
     public abstract class AbstractTask : TaskIF
@@ -217,10 +228,8 @@ namespace Server
         lockManager.done();
     } // setBid(int)
 } // class Bid
-
-
-public class ReadWriteLock
-    {
+  /public class ReadWriteLock
+{
         private int waitingForReadLock = 0;
         private int outstandingReadLocks = 0;
 
@@ -235,14 +244,14 @@ public class ReadWriteLock
                waitingForReadLock++;
                while (writeLockedThread != null) {
                     wait();
-    } // while
+} // while
     waitingForReadLock--;
           } // if
 outstandingReadLocks++;
      } // readLock()
 
-     public void writeLock() throws InterruptedException
-{
+    public void writeLock() throws InterruptedException
+    {
     Thread thisThread;
     synchronized (this) {
         if (writeLockedThread == null && outstandingReadLocks == 0)
