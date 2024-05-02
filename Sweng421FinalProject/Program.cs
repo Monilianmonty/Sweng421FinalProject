@@ -156,9 +156,6 @@ namespace Sweng421FinalProject
         {
             Console.WriteLine("this task is low priority with the task being " + task + " and the deadline is " + deadline);
         }
-
-
-
     }
 
     public class TaskVisitor : TaskVisitorIF
@@ -307,62 +304,47 @@ namespace Sweng421FinalProject
         }
     }
 
-    public class NotificationWrapper
+    
+
+    
+
+    public interface NotificationSystemWrapper
     {
-        public TaskIF tif;
-        public NotificationSystem ns;
 
+       
+        public void notify();
+        
 
+        
     }
 
-    public class AbstractTaskNotificationWrapper
+    public class DeadlineNotificationWrapper : NotificationSystemWrapper
     {
-        public String getTask()
+        private AbstractTask dt;
+        public DeadlineNotificationWrapper(AbstractTask t)
         {
-            return null;
+            this.dt = t;
         }
-
-        public void setTask(String task)
-        {
-        }
-
-        public int getpriority()
-        {
-            return 0;
-        }
-
-        public void setPriority(int priority)
-        {
-
-        }
-
         public void notify()
         {
+            TimeSpan difference = DateTime.Now - dt.getDeadline();
 
+            Console.WriteLine(difference.Milliseconds);
         }
     }
 
-    public class NotificationSystem
+    public class StatusUpdate : NotificationSystemWrapper
     {
-        public void notify()
+        private AbstractTask st;
+
+        public StatusUpdate(AbstractTask t)
         {
+            this.st = t;
 
         }
-    }
-
-    public class DeadlineNotification : NotificationSystem
-    {
         public void notify()
         {
-
-        }
-    }
-
-    public class StatusUpdate : NotificationSystem
-    {
-        public void notify()
-        {
-
+            
         }
     }
 
@@ -436,7 +418,7 @@ namespace Sweng421FinalProject
 
         public List<TaskFactoryIF> tasks;
         public TaskVisitorIF tvif;
-        public AbstractTaskNotificationWrapper atnw;
+       // public AbstractTaskNotificationWrapper atnw;
 
         public List<Task> getAllTasks(TMS tms)
         {
@@ -451,7 +433,7 @@ namespace Sweng421FinalProject
 
         public List<TaskFactoryIF> tasks;
         public TaskVisitorIF tvif;
-        public AbstractTaskNotificationWrapper atnw;
+       // public AbstractTaskNotificationWrapper atnw;
 
         public List<Task> getAllTasks(TMS tms)
         {
@@ -471,7 +453,7 @@ namespace Sweng421FinalProject
 
         public List<TaskFactoryIF> tasks;
         public TaskVisitorIF tvif;
-        public AbstractTaskNotificationWrapper atnw;
+      //  public AbstractTaskNotificationWrapper atnw;
 
         public String getName()
         {
@@ -495,7 +477,7 @@ namespace Sweng421FinalProject
         [STAThread]
         static void Main()
         {
-            
+            //test factory
             string lowTask = "LowPriorityTask";
             string mediumTask = "MediumPriorityTask";
             string highTask = "HighPriorityTask";
@@ -519,6 +501,7 @@ namespace Sweng421FinalProject
 
             string report = "report from the boss";
 
+            //test visitor
             TaskVisitorIF tvif = new TaskVisitor(report);
 
             tvif.visit(task);
@@ -528,9 +511,18 @@ namespace Sweng421FinalProject
 
             tvif.createReport();
             
+            //test wrapper
+            NotificationSystemWrapper nsw = new DeadlineNotificationWrapper(task);
+
+            nsw.notify();
 
             ApplicationConfiguration.Initialize();
             Application.Run(new Form1());
         }
     }
+
+   
+
+
+
 }

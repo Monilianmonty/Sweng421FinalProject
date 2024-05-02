@@ -4,51 +4,241 @@ using System.Reflection;
 namespace Server
 {
 
-}
-
-public class Bid
-{
-    private int bid = 0;
-    private ReadWriteLock lockManager = new ReadWriteLock();
-    //...
-    public int getBid() throws InterruptedException
+    public interface TaskIF
     {
-        lockManager.readLock();
-          int bid = this.bid;
-    lockManager.done();
-          return bid;
+        public String getTask();
+
+        public void setTask(String task);
+
+        public int getPriority();
+
+        public void setPriority(int priority);
+
+        public DateTime getDeadline();
+
+        public void setDeadline(DateTime deadline);
+
+    }
+
+    public abstract class AbstractTask : TaskIF
+    {
+        String task;
+        int priority;
+        DateTime deadline;
+
+        public AbstractTask()
+        {
+
+        }
+        public String getTask()
+        {
+            return task;
+        }
+
+        public void setTask(String task)
+        {
+            this.task = task;
+        }
+
+        public int getPriority()
+        {
+            return this.priority;
+        }
+
+        public void setPriority(int priority)
+        {
+            this.priority = priority;
+        }
+
+        public abstract void presentTask();
+
+        public DateTime getDeadline()
+        {
+            return deadline;
+        }
+
+        public void setDeadline(DateTime deadline)
+        {
+            this.deadline = deadline;
+        }
+    }
+
+
+
+    public class LowPriorityTask : AbstractTask
+    {
+        String task;
+
+        int priority = 3;
+
+        DateTime deadline;
+
+        public LowPriorityTask(String task, int priority, DateTime deadline)
+        {
+            this.task = task;
+            this.priority = priority;
+            this.deadline = deadline;
+
+        }
+
+        public String getTask()
+        {
+            return task;
+        }
+
+        public void setTask(String task)
+        {
+            this.task = task;
+        }
+
+        public int getPriority()
+        {
+            return this.priority;
+        }
+
+        public void setPriority(int priority)
+        {
+            this.priority = priority;
+        }
+
+        public override void presentTask()
+        {
+            Console.WriteLine("this task is low priority with the task being " + task + " and the deadline is " + deadline);
+        }
+    }
+
+    public class MediumPriorityTask : AbstractTask
+    {
+        String task;
+
+        int priority = 2;
+
+        DateTime deadline;
+
+        public MediumPriorityTask(String task, int priority, DateTime deadline)
+        {
+            this.task = task;
+            this.priority = priority;
+            this.deadline = deadline;
+
+        }
+
+        public MediumPriorityTask() { }
+
+        public String getTask()
+        {
+            return task;
+        }
+
+        public void setTask(String task)
+        {
+            this.task = task;
+        }
+
+        public int getPriority()
+        {
+            return this.priority;
+        }
+
+        public void setPriority(int priority)
+        {
+            this.priority = priority;
+        }
+
+        public override void presentTask()
+        {
+            Console.WriteLine("this task is medium priority with the task being " + task + " and the deadline is " + deadline);
+        }
+
+
+    }
+
+    public class HighPriorityTask : AbstractTask
+    {
+        String task;
+
+        int priority = 2;
+
+        DateTime deadline;
+
+        public HighPriorityTask(String task, int priority, DateTime deadline)
+        {
+            this.task = task;
+            this.priority = priority;
+            this.deadline = deadline;
+
+        }
+
+        public String getTask()
+        {
+            return task;
+        }
+
+        public void setTask(String task)
+        {
+            this.task = task;
+        }
+
+        public int getPriority()
+        {
+            return this.priority;
+        }
+
+        public void setPriority(int priority)
+        {
+            this.priority = priority;
+        }
+
+        public override void presentTask()
+        {
+            Console.WriteLine("this task is high priority with the task being " + task + " and the deadline is " + deadline);
+        }
+    }
+
+    public class ServersideTasks
+    {
+        private List<TaskIF> tasks;
+        private ReadWriteLock lockManager = new ReadWriteLock();
+        //...
+        public List<TaskIF> getTasks() throws InterruptedException
+        {
+            lockManager.readLock();
+            List<TaskIF> tasks = this.tasks;
+        lockManager.done();
+          return tasks;
      } // getBid()
 
-public void setBid(int bid) throws InterruptedException
-{
-    lockManager.writeLock();
-          if (bid > this.bid) {
-        this.bid = bid;
-    } // if
-    lockManager.done();
-} // setBid(int)
+    public void updateTasks(List<TaskIF> tasks) throws InterruptedException
+    {
+        lockManager.writeLock();
+          if (tasks != this.tasks) {
+            this.tasks = tasks;
+        } // if
+        lockManager.done();
+    } // setBid(int)
 } // class Bid
 
+
 public class ReadWriteLock
-{
-    private int waitingForReadLock = 0;
-    private int outstandingReadLocks = 0;
-
-    // The thread that has the write lock or null.
-    private Thread writeLockedThread;
-
-    private ArrayList waitingForWriteLock = new ArrayList();
-
-    synchronized public void readLock() throws InterruptedException
     {
+        private int waitingForReadLock = 0;
+        private int outstandingReadLocks = 0;
+
+        // The thread that has the write lock or null.
+        private Thread writeLockedThread;
+
+        private ArrayList waitingForWriteLock = new ArrayList();
+
+        synchronized public void readLock() throws InterruptedException
+        {
           if  (writeLockedThread != null) {
                waitingForReadLock++;
                while (writeLockedThread != null) {
                     wait();
-} // while
-waitingForReadLock--;
+    } // while
+    waitingForReadLock--;
           } // if
-          outstandingReadLocks++;
+outstandingReadLocks++;
      } // readLock()
 
      public void writeLock() throws InterruptedException
@@ -111,3 +301,5 @@ synchronized public void done()
     } // if
 } // done()
 } // class ReadWriteLock
+}
+
