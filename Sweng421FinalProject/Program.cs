@@ -2,13 +2,29 @@ using Sweng421FinalProject;
 using System.Diagnostics;
 using System.Reflection;
 using System.Threading.Tasks;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrackBar;
 
 namespace Sweng421FinalProject
 {
+    public class UserManager
+    {
+        private List<User> users = new List<User>();
 
+        public void AddUser(User user)
+        {
+            users.Add(user);
+        }
+
+        public User GetUser(string username)
+        {
+            return users.FirstOrDefault(u => u.Username == username);
+        }
+    }
     public class TMS
     {
-       // public ITaskScheduler scheduler;
+       
+
+        // public ITaskScheduler scheduler;
         public TaskVisitorIF tvif;
 
         public void addTask(String task, int priority, DateTime deadline)
@@ -54,11 +70,22 @@ namespace Sweng421FinalProject
     public class User: PersonIF
     {
         //public MainGUI mg;
-        public List<TaskIF> tasks;
+        public List<TaskIF> Tasks { get; private set; } 
+
+        public string Username { get; set; }
+        public string Password { get; set; }
+
+        public User(string u,string p)
+        {
+            this.Username = u;
+            this.Password = p;
+            Tasks = new List<TaskIF>(); 
+
+        }
 
         public AbstractTask getInfo()
         {
-            foreach (AbstractTask task in tasks)
+            foreach (AbstractTask task in Tasks)
             {
                 if (task is LowPriorityPerson)
                 {
@@ -74,11 +101,24 @@ namespace Sweng421FinalProject
                 {
                     task.PresentTask();
                     return task;
-                }
+                } 
             }
 
 
             return null;
+        }
+
+        public TaskIF GetTaskByName(string taskName)
+        {
+            return Tasks.FirstOrDefault(t => t.Task == taskName);
+        }
+
+        public void AddTask(TaskIF task)
+        {
+            if (task != null)
+            {
+                Tasks.Add(task);
+            }
         }
 
 
@@ -93,8 +133,17 @@ namespace Sweng421FinalProject
 
     public class Admin : PersonIF
     {
-        List<AbstractTask> tasks = new List<AbstractTask>();
-        User user;
+        public List<AbstractTask> tasks = new List<AbstractTask>();
+
+        private UserManager userManager;
+
+        public string Username { get; set; }
+        public string Password { get; set; }
+        public Admin(string u, string p)
+        {
+            this.Username = u;
+            this.Password = p;
+        }
 
         public Admin(List<AbstractTask> tasks)
         {
@@ -126,10 +175,17 @@ namespace Sweng421FinalProject
             return null; 
         }
 
-
-        public void modifyInfo(User employee, AbstractTask t)
+        //can view user info
+        public void viewInfo(string empname, string task, int priority, DateTime deadline)
         {
+            AbstractTask at;
+            User u = userManager.GetUser(empname);
+            at = u.getInfo();
+
+           
             
+
+            Console.WriteLine(at);
         }
 
     }
@@ -449,6 +505,8 @@ namespace Sweng421FinalProject
             AbstractTask t3 = (AbstractTask)tfif.createTask(highTask, "Complete an high task", 1, dateTime);
             AbstractTask t4 = (AbstractTask)tfif.createTask(highTask, "Complete an high task AGAIIIIIIN", 1, dateTime);
 
+            TaskIF t5 = tfif.createTask(highTask, "Complete an high task AGAIIIIIIN", 1, dateTime);
+
             if (task != null)
             {
                 task.PresentTask(); // assuming there's a method to perform the task
@@ -479,7 +537,33 @@ namespace Sweng421FinalProject
 
             dsw.notify();
 
-            
+            //test users and admins
+            Admin a1 = new Admin("admin", "pass");
+            User u = new User("user1", "pass");
+            User u2 = new User("user2", "pass");
+            User u3 = new User("user3", "pass");
+
+
+
+
+
+            u.AddTask(t5);
+      
+
+
+          
+         
+
+            UserManager um = new UserManager();
+
+            um.AddUser(u);
+            um.AddUser(u2);
+
+            User jj = um.GetUser("user2");
+
+            string user = jj.Username;
+
+            Console.WriteLine(user);
 
             ApplicationConfiguration.Initialize();
             Application.Run(new Form1());
