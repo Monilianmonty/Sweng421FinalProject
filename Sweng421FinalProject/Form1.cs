@@ -49,10 +49,14 @@ namespace Sweng421FinalProject
             }
 
             // Authenticate user
-            if (userManager.AuthenticateUser(username, password))
+            PersonBase loggedInUser = userManager.AuthenticateUser(username, password);
+            if (loggedInUser != null)
             {
                 MessageBox.Show("Login successful!");
-                // Here you can open another form or do other actions on successful login
+                this.Hide(); // Optional: hide the login form
+                
+                Form3 mainForm = new Form3((User)loggedInUser); // Pass the authenticated user to Form3
+                mainForm.Show();
             }
             else
             {

@@ -85,9 +85,12 @@ namespace Sweng421FinalProject
             return people.FirstOrDefault(p => p.Username == username);
         }
 
-        public bool AuthenticateUser(string username, string password)
+        public PersonBase AuthenticateUser(string username, string password)
         {
-            return fileManager.AuthenticateUser(username, password);
+            var user = fileManager.LoadPeople().FirstOrDefault(u => u.Username == username && u.Password == password);
+
+
+            return user; // Returns null if no user found
         }
     }
     public class TMS

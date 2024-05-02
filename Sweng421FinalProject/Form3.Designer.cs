@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            Username = new ListBox();
             label1 = new Label();
             button1 = new Button();
             button2 = new Button();
@@ -47,16 +46,8 @@
             label5 = new Label();
             textBox3 = new TextBox();
             textBox4 = new TextBox();
+            label6 = new Label();
             SuspendLayout();
-            // 
-            // Username
-            // 
-            Username.FormattingEnabled = true;
-            Username.ItemHeight = 15;
-            Username.Location = new Point(26, 27);
-            Username.Name = "Username";
-            Username.Size = new Size(120, 19);
-            Username.TabIndex = 0;
             // 
             // label1
             // 
@@ -75,6 +66,7 @@
             button1.TabIndex = 3;
             button1.Text = "Create";
             button1.UseVisualStyleBackColor = true;
+            button1.Click += button1_Click;
             // 
             // button2
             // 
@@ -84,6 +76,7 @@
             button2.TabIndex = 4;
             button2.Text = "Delete";
             button2.UseVisualStyleBackColor = true;
+            button2.Click += button2_Click;
             // 
             // textBox1
             // 
@@ -91,6 +84,7 @@
             textBox1.Name = "textBox1";
             textBox1.Size = new Size(332, 23);
             textBox1.TabIndex = 5;
+            textBox1.TextChanged += textBox1_TextChanged;
             // 
             // label2
             // 
@@ -109,6 +103,7 @@
             button3.TabIndex = 7;
             button3.Text = "Edit";
             button3.UseVisualStyleBackColor = true;
+            button3.Click += button3_Click;
             // 
             // textBox2
             // 
@@ -144,6 +139,7 @@
             button4.TabIndex = 11;
             button4.Text = "Create Report";
             button4.UseVisualStyleBackColor = true;
+            button4.Click += button4_Click;
             // 
             // Notify
             // 
@@ -153,6 +149,7 @@
             Notify.TabIndex = 12;
             Notify.Text = "Notify";
             Notify.UseVisualStyleBackColor = true;
+            Notify.Click += Notify_Click;
             // 
             // comboBox1
             // 
@@ -178,6 +175,7 @@
             comboBox2.Name = "comboBox2";
             comboBox2.Size = new Size(70, 23);
             comboBox2.TabIndex = 15;
+            comboBox2.SelectedIndexChanged += comboBox2_SelectedIndexChanged;
             // 
             // button6
             // 
@@ -187,6 +185,7 @@
             button6.TabIndex = 16;
             button6.Text = "Confirm";
             button6.UseVisualStyleBackColor = true;
+            button6.Click += button6_Click;
             // 
             // label5
             // 
@@ -213,11 +212,22 @@
             textBox4.TabIndex = 19;
             textBox4.TextChanged += textBox4_TextChanged;
             // 
+            // label6
+            // 
+            label6.AutoSize = true;
+            label6.Location = new Point(27, 28);
+            label6.Name = "label6";
+            label6.Size = new Size(38, 15);
+            label6.TabIndex = 20;
+            label6.Text = "label6";
+            label6.Click += label6_Click;
+            // 
             // Form3
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(label6);
             Controls.Add(textBox4);
             Controls.Add(textBox3);
             Controls.Add(label5);
@@ -236,7 +246,6 @@
             Controls.Add(button2);
             Controls.Add(button1);
             Controls.Add(label1);
-            Controls.Add(Username);
             Name = "Form3";
             Text = "Form3";
             ResumeLayout(false);
@@ -244,8 +253,6 @@
         }
 
         #endregion
-
-        private ListBox Username;
         private Label label1;
         private Button button1;
         private Button button2;
@@ -264,5 +271,6 @@
         private Label label5;
         private TextBox textBox3;
         private TextBox textBox4;
+        private Label label6;
     }
 }
