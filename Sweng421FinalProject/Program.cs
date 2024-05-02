@@ -3,21 +3,91 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Threading.Tasks;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrackBar;
+using System.Collections.Generic;
+using System.IO;
+using System.Runtime.Serialization;
+using System.Xml;
+using System.Xml.Serialization;
 
 namespace Sweng421FinalProject
 {
-    public class UserManager
+    [Serializable]
+    public class FileManager
     {
-        private List<User> users = new List<User>();
+        private string filePath = "people.xml";
 
-        public void AddUser(User user)
+        public void SavePerson(PersonBase person)
         {
-            users.Add(user);
+            List<PersonBase> people = LoadPeople();
+            people.Add(person);
+            XmlSerializer serializer = new XmlSerializer(typeof(List<PersonBase>), new[] { typeof(User), typeof(Admin) });
+
+            using (var stream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
+            {
+                serializer.Serialize(stream, people);
+            }
         }
 
-        public User GetUser(string username)
+        public List<PersonBase> LoadPeople()
         {
-            return users.FirstOrDefault(u => u.Username == username);
+            Console.WriteLine("Loading data from file: " + Path.GetFullPath(filePath));
+
+            if (!File.Exists(filePath) || new FileInfo(filePath).Length == 0)
+                return new List<PersonBase>();
+
+            XmlSerializer serializer = new XmlSerializer(typeof(List<PersonBase>), new[] { typeof(User), typeof(Admin) });
+            using (var stream = File.OpenRead(filePath))
+            {
+                return (List<PersonBase>)serializer.Deserialize(stream) ?? new List<PersonBase>();
+            }
+        }
+
+        public bool AuthenticateUser(string username, string password)
+        {
+            var people = LoadPeople();
+            return people.Any(person => person.Username == username && person.Password == password);
+        }
+    }
+
+    public class XmlSerializerSettings
+    {
+        public Type[] KnownTypes { get; set; }
+
+        public XmlSerializerSettings()
+        {
+            // Add all known subclasses of PersonIF that you plan to serialize/deserialize
+            KnownTypes = new Type[] { typeof(User), typeof(Admin) };
+        }
+    }
+    public class UserManager
+    {
+        private List<PersonBase> people;
+        private FileManager fileManager = new FileManager();
+
+        public UserManager()
+        {
+            people = fileManager.LoadPeople();
+        }
+
+        public bool AddPerson(PersonBase person)
+        {
+            if (people.All(p => p.Username != person.Username))
+            {
+                fileManager.SavePerson(person);  // Save individual person
+                people.Add(person);  // Update local cache
+                return true;
+            }
+            return false;
+        }
+
+        public PersonBase GetPerson(string username)
+        {
+            return people.FirstOrDefault(p => p.Username == username);
+        }
+
+        public bool AuthenticateUser(string username, string password)
+        {
+            return fileManager.AuthenticateUser(username, password);
         }
     }
     public class TMS
@@ -66,46 +136,49 @@ namespace Sweng421FinalProject
         }
     }
 
-
-    public class User: PersonIF
+    [Serializable]
+    public abstract class PersonBase : PersonIF
     {
-        //public MainGUI mg;
-        public List<TaskIF> Tasks { get; private set; } 
-
         public string Username { get; set; }
         public string Password { get; set; }
 
-        public User(string u,string p)
-        {
-            this.Username = u;
-            this.Password = p;
-            Tasks = new List<TaskIF>(); 
+        protected PersonBase() { }
 
+        protected PersonBase(string username, string password)
+        {
+            Username = username;
+            Password = password;
         }
 
-        public AbstractTask getInfo()
+        public abstract AbstractTask getInfo();  // Ensure this is an abstract method to be implemented by subclasses
+    }
+
+    public interface PersonIF
+    {
+        string Username { get; set; }
+        string Password { get; set; }
+        AbstractTask getInfo();
+    }
+    [Serializable]
+    public class User : PersonBase
+    {
+        [XmlIgnore] // Tasks cannot be serialized directly because TaskIF is an interface
+        public List<TaskIF> Tasks { get; private set; }
+
+        public User(string username, string password) : base(username, password)
         {
-            foreach (AbstractTask task in Tasks)
-            {
-                if (task is LowPriorityPerson)
-                {
-                    task.PresentTask();
-                    return task;
-                }
-                else if (task is MediumPriorityTask)
-                {
-                    task.PresentTask();
-                    return task;
-                }
-                else if (task is HighPriorityTask)
-                {
-                    task.PresentTask();
-                    return task;
-                } 
-            }
+            Tasks = new List<TaskIF>();
+        }
 
+        public User() : base()
+        {
+            Tasks = new List<TaskIF>();
+        }
 
-            return null;
+        public override AbstractTask getInfo()
+        {
+            // Assuming you return the first task for simplicity; adjust logic as needed
+            return Tasks.OfType<AbstractTask>().FirstOrDefault();
         }
 
         public TaskIF GetTaskByName(string taskName)
@@ -120,18 +193,11 @@ namespace Sweng421FinalProject
                 Tasks.Add(task);
             }
         }
-
-
     }
 
-    public interface PersonIF
-    {
-        public AbstractTask getInfo();
 
-      
-    }
-
-    public class Admin : PersonIF
+    [Serializable]
+    public class Admin : PersonBase
     {
         public List<AbstractTask> tasks = new List<AbstractTask>();
 
@@ -139,18 +205,20 @@ namespace Sweng421FinalProject
 
         public string Username { get; set; }
         public string Password { get; set; }
-        public Admin(string u, string p)
+        public Admin(string u, string p): base(u,p)
         {
             this.Username = u;
             this.Password = p;
+            tasks = new List<AbstractTask>();
         }
 
-        public Admin(List<AbstractTask> tasks)
+       
+        public Admin(): base()
         {
-            this.tasks = tasks;
+            tasks = new List<AbstractTask>();  // Initialize any collections to prevent null reference issues
         }
 
-        public AbstractTask getInfo()
+        public override AbstractTask getInfo()
         {
             foreach (AbstractTask task in tasks)
             {
@@ -179,7 +247,7 @@ namespace Sweng421FinalProject
         public void viewInfo(string empname, string task, int priority, DateTime deadline)
         {
             AbstractTask at;
-            User u = userManager.GetUser(empname);
+            PersonIF u = userManager.GetPerson(empname);
             at = u.getInfo();
 
            
@@ -190,15 +258,15 @@ namespace Sweng421FinalProject
 
     }
 
-  
 
+   
     public interface TaskIF
     {
         string Task { get; }
         int Priority { get;  }
         DateTime Deadline { get;  }
     }
-
+    [Serializable]
     public abstract class AbstractTask : TaskIF
     {
         public string Task { get; set; }
@@ -207,7 +275,7 @@ namespace Sweng421FinalProject
 
         public abstract void PresentTask();
     }
-
+    
     public class LowPriorityTask : AbstractTask
     {
         public LowPriorityTask(string task, int priority, DateTime deadline)
@@ -222,7 +290,7 @@ namespace Sweng421FinalProject
             Console.WriteLine($"This task is low priority with the task being {Task} and the deadline is {Deadline}.");
         }
     }
-
+    
     public class MediumPriorityTask : AbstractTask
     {
         public MediumPriorityTask(string task, int priority, DateTime deadline)
@@ -237,7 +305,7 @@ namespace Sweng421FinalProject
             Console.WriteLine($"This task is medium priority with the task being {Task} and the deadline is {Deadline}.");
         }
     }
-
+   
     public class HighPriorityTask : AbstractTask
     {
         public HighPriorityTask(string task, int priority, DateTime deadline)
@@ -548,22 +616,22 @@ namespace Sweng421FinalProject
 
 
             u.AddTask(t5);
-      
 
 
-          
+
+            
          
 
             UserManager um = new UserManager();
 
-            um.AddUser(u);
-            um.AddUser(u2);
+            //um.AddPerson(u);
+            //um.AddPerson(u2);
 
-            User jj = um.GetUser("user2");
+            //PersonIF jj = um.GetPerson("user2");
 
-            string user = jj.Username;
+            
 
-            Console.WriteLine(user);
+           // Console.WriteLine(user);
 
             ApplicationConfiguration.Initialize();
             Application.Run(new Form1());
