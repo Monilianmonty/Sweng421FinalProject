@@ -1,3 +1,4 @@
+using Sweng421FinalProject;
 using System.Diagnostics;
 using System.Reflection;
 
@@ -6,7 +7,7 @@ namespace Sweng421FinalProject
 
     public class TMS
     {
-        public ITaskScheduler scheduler;
+       // public ITaskScheduler scheduler;
         public TaskVisitorIF tvif;
 
         public void addTask(String task, int priority, DateTime deadline)
@@ -35,14 +36,14 @@ namespace Sweng421FinalProject
         }
     }
 
-    public interface ITaskScheduler
+    public class ServerConnection
     {
-        public void rescheduleTask(Task t, DateTime deadline);
-    }
+        public List<TaskIF> getTasks()
+        {
+            return null;
+        }
 
-    public class TaskScheduler : ITaskScheduler
-    {
-        public void rescheduleTask(Task t, DateTime deadline)
+        public void updateTasks()
         {
 
         }
@@ -159,20 +160,63 @@ namespace Sweng421FinalProject
 
 
     }
+
     public class TaskVisitor : TaskVisitorIF
     {
-        public void visit(Task AbstractTask)
+        List<AbstractTask> tasks = new List<AbstractTask>();
+
+
+        string report;
+
+        public TaskVisitor(string r)
         {
+            this.report = r;
 
         }
+
+        public void visit(AbstractTask at)
+        {
+            tasks.Add(at);
+        }
+
+        //create report
+        public void createReport()
+        {
+            foreach (AbstractTask task in tasks)
+            {
+                if (task is LowPriorityTask lowPriorityTask)
+                {
+                   
+                    Console.WriteLine("******** " + report + " *********");
+                    lowPriorityTask.presentTask(); 
+                }
+                else if (task is MediumPriorityTask mediumprioritytask)
+                {
+
+                    Console.WriteLine("******** " + report + " *********");
+                    mediumprioritytask.presentTask();
+                }
+                else if (task is HighPriorityTask highpriorityperson)
+                {
+
+                    Console.WriteLine("******** " + report + " *********");
+                    highpriorityperson.presentTask();
+                }
+            }
+        }
+
+
+
     }
 
     public interface TaskVisitorIF
     {
-        public void visit(Task AbstractTask)
-        {
+    public void visit(AbstractTask a);
 
-        }
+
+
+
+    public void createReport();
     }
 
     public class MediumPriorityTask : AbstractTask
@@ -326,7 +370,7 @@ namespace Sweng421FinalProject
     public interface TaskFactoryIF
     {
 
-        public  TaskIF createTask(String name, String task, int priority, DateTime deadline);
+        public TaskIF createTask(String name, String task, int priority, DateTime deadline);
     }
 
     public class TaskFactory : TaskFactoryIF
@@ -381,83 +425,89 @@ namespace Sweng421FinalProject
         public String GetTask()
         {
             return "";
-        
+
         }
     }
 
-        public abstract class CompositePriorityPerson
+    public abstract class CompositePriorityPerson
+    {
+        String username;
+        String password;
+
+        public List<TaskFactoryIF> tasks;
+        public TaskVisitorIF tvif;
+        public AbstractTaskNotificationWrapper atnw;
+
+        public List<Task> getAllTasks(TMS tms)
         {
-            String username;
-            String password;
+            return null;
+        }
+    }
 
-            public List<TaskFactoryIF> tasks;
-            public TaskVisitorIF tvif;
-            public AbstractTaskNotificationWrapper atnw;
+    public class HighPriorityPerson : CompositePriorityPerson
+    {
+        String username;
+        String password;
 
-            public List<Task> getAllTasks(TMS tms)
-            {
-                return null;
-            }
+        public List<TaskFactoryIF> tasks;
+        public TaskVisitorIF tvif;
+        public AbstractTaskNotificationWrapper atnw;
+
+        public List<Task> getAllTasks(TMS tms)
+        {
+            return null;
         }
 
-        public class HighPriorityPerson : CompositePriorityPerson
+        public void NotifyLowPriorityPreson(LowPriorityPerson person)
         {
-            String username;
-            String password;
 
-            public List<TaskFactoryIF> tasks;
-            public TaskVisitorIF tvif;
-            public AbstractTaskNotificationWrapper atnw;
+        }
+    }
 
-            public List<Task> getAllTasks(TMS tms)
-            {
-                return null;
-            }
+    public class LowPriorityPerson : CompositePriorityPerson
+    {
+        String username;
+        String password;
 
-            public void NotifyLowPriorityPreson(LowPriorityPerson person)
-            {
+        public List<TaskFactoryIF> tasks;
+        public TaskVisitorIF tvif;
+        public AbstractTaskNotificationWrapper atnw;
 
-            }
+        public String getName()
+        {
+            return null;
         }
 
-        public class LowPriorityPerson : CompositePriorityPerson
+        public String getTask()
         {
-            String username;
-            String password;
-
-            public List<TaskFactoryIF> tasks;
-            public TaskVisitorIF tvif;
-            public AbstractTaskNotificationWrapper atnw;
-
-            public String getName()
-            {
-                return null;
-            }
-
-            public String getTask()
-            {
-                return null;
-            }
+            return null;
         }
+    }
 
 
-        internal static class Program
-        {
+    internal static class Program
+    {
 
 
-            /// <summary>
-            ///  The main entry point for the application.
-            /// </summary>
-            [STAThread]
+        /// <summary>
+        ///  The main entry point for the application.
+        /// </summary>
+        [STAThread]
         static void Main()
         {
-            Console.WriteLine("hello");
+            
+            string lowTask = "LowPriorityTask";
             string mediumTask = "MediumPriorityTask";
+            string highTask = "HighPriorityTask";
 
             TaskFactoryIF tfif = new TaskFactory();
             DateTime dateTime = DateTime.Now.AddDays(1); // setting a future deadline
 
-            MediumPriorityTask task = (MediumPriorityTask)tfif.createTask(mediumTask, "Complete an easy task", 2, dateTime);
+            AbstractTask task = (AbstractTask)tfif.createTask(mediumTask, "Complete an medium task", 2, dateTime);
+            AbstractTask t2 = (AbstractTask)tfif.createTask(lowTask, "Complete an low task", 3, dateTime);
+            AbstractTask t3 = (AbstractTask)tfif.createTask(highTask, "Complete an high task", 1, dateTime);
+            AbstractTask t4 = (AbstractTask)tfif.createTask(highTask, "Complete an high task AGAIIIIIIN", 1, dateTime);
+
             if (task != null)
             {
                 task.presentTask(); // assuming there's a method to perform the task
@@ -467,10 +517,20 @@ namespace Sweng421FinalProject
                 Console.WriteLine("Failed to create task instance.");
             }
 
+            string report = "report from the boss";
+
+            TaskVisitorIF tvif = new TaskVisitor(report);
+
+            tvif.visit(task);
+            tvif.visit(t2);
+            tvif.visit(t3);
+            tvif.visit(t4);
+
+            tvif.createReport();
+            
+
             ApplicationConfiguration.Initialize();
             Application.Run(new Form1());
         }
     }
-
-
-    }
+}
