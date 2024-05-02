@@ -44,6 +44,9 @@
             label4 = new Label();
             comboBox2 = new ComboBox();
             button6 = new Button();
+            label5 = new Label();
+            textBox3 = new TextBox();
+            textBox4 = new TextBox();
             SuspendLayout();
             // 
             // Username
@@ -66,9 +69,9 @@
             // 
             // button1
             // 
-            button1.Location = new Point(26, 398);
+            button1.Location = new Point(12, 411);
             button1.Name = "button1";
-            button1.Size = new Size(75, 23);
+            button1.Size = new Size(70, 23);
             button1.TabIndex = 3;
             button1.Text = "Create";
             button1.UseVisualStyleBackColor = true;
@@ -84,15 +87,15 @@
             // 
             // textBox1
             // 
-            textBox1.Location = new Point(26, 369);
+            textBox1.Location = new Point(12, 382);
             textBox1.Name = "textBox1";
-            textBox1.Size = new Size(337, 23);
+            textBox1.Size = new Size(332, 23);
             textBox1.TabIndex = 5;
             // 
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(23, 351);
+            label2.Location = new Point(9, 364);
             label2.Name = "label2";
             label2.Size = new Size(56, 15);
             label2.TabIndex = 6;
@@ -109,15 +112,15 @@
             // 
             // textBox2
             // 
-            textBox2.Location = new Point(25, 272);
+            textBox2.Location = new Point(11, 285);
             textBox2.Name = "textBox2";
-            textBox2.Size = new Size(336, 23);
+            textBox2.Size = new Size(331, 23);
             textBox2.TabIndex = 8;
             // 
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(26, 245);
+            label3.Location = new Point(12, 258);
             label3.Name = "label3";
             label3.Size = new Size(52, 15);
             label3.TabIndex = 9;
@@ -154,15 +157,15 @@
             // comboBox1
             // 
             comboBox1.FormattingEnabled = true;
-            comboBox1.Location = new Point(386, 272);
+            comboBox1.Location = new Point(372, 285);
             comboBox1.Name = "comboBox1";
-            comboBox1.Size = new Size(121, 23);
+            comboBox1.Size = new Size(70, 23);
             comboBox1.TabIndex = 13;
             // 
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new Point(386, 234);
+            label4.Location = new Point(372, 247);
             label4.Name = "label4";
             label4.Size = new Size(70, 15);
             label4.TabIndex = 14;
@@ -171,25 +174,53 @@
             // comboBox2
             // 
             comboBox2.FormattingEnabled = true;
-            comboBox2.Location = new Point(386, 369);
+            comboBox2.Location = new Point(372, 382);
             comboBox2.Name = "comboBox2";
-            comboBox2.Size = new Size(121, 23);
+            comboBox2.Size = new Size(70, 23);
             comboBox2.TabIndex = 15;
             // 
             // button6
             // 
-            button6.Location = new Point(26, 313);
+            button6.Location = new Point(12, 326);
             button6.Name = "button6";
-            button6.Size = new Size(75, 23);
+            button6.Size = new Size(70, 23);
             button6.TabIndex = 16;
             button6.Text = "Confirm";
             button6.UseVisualStyleBackColor = true;
+            // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.Location = new Point(491, 245);
+            label5.Name = "label5";
+            label5.Size = new Size(53, 15);
+            label5.TabIndex = 17;
+            label5.Text = "Deadline";
+            // 
+            // textBox3
+            // 
+            textBox3.Location = new Point(473, 286);
+            textBox3.Name = "textBox3";
+            textBox3.Size = new Size(100, 23);
+            textBox3.TabIndex = 18;
+            textBox3.TextChanged += textBox3_TextChanged;
+            // 
+            // textBox4
+            // 
+            textBox4.Location = new Point(473, 382);
+            textBox4.Name = "textBox4";
+            textBox4.Size = new Size(100, 23);
+            textBox4.TabIndex = 19;
+            textBox4.TextChanged += textBox4_TextChanged;
             // 
             // Form3
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(textBox4);
+            Controls.Add(textBox3);
+            Controls.Add(label5);
             Controls.Add(button6);
             Controls.Add(comboBox2);
             Controls.Add(label4);
@@ -230,5 +261,8 @@
         private Label label4;
         private ComboBox comboBox2;
         private Button button6;
+        private Label label5;
+        private TextBox textBox3;
+        private TextBox textBox4;
     }
 }

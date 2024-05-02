@@ -22,5 +22,17 @@ namespace Sweng421FinalProject
         {
 
         }
+
+        //deadline edit task
+        private void textBox3_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        //deadline new task
+        private void textBox4_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }
